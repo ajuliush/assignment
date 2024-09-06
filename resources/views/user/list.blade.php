@@ -39,8 +39,8 @@
                                     <td>{{ $item->email }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
-                                            <a href="" class="btn btn-primary btn-sm">Edit</a>
-                                            <a href="javascript:void(0)" data-id="3" class="btn btn-danger btn-sm delete-user" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                                            <a href="{{ route('user.edit', $item->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                            <a href="javascript:void(0)" data-id="3" class="btn btn-danger btn-sm delete-user">Delete</a>
                                         </div>
                                     </td>
                                 </tr>
@@ -55,3 +55,49 @@
     </div>
 </section>
 @endsection
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.delete-user').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-id');
+                Swal.fire({
+                    title: 'Are you sure?'
+                    , text: "You won't be able to revert this!"
+                    , icon: 'warning'
+                    , showCancelButton: true
+                    , confirmButtonColor: '#3085d6'
+                    , cancelButtonColor: '#d33'
+                    , confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If confirmed, create a form and submit it
+                        const form = document.createElement('form');
+                        form.action = `{{ url('delete') }}/${userId}`;
+                        form.method = 'POST';
+
+                        // Add CSRF token input
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfInput);
+
+                        // Add method spoofing input for DELETE method
+                        const methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'DELETE';
+                        form.appendChild(methodInput);
+
+                        // Append the form to the body and submit it
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+
+</script>
+@endpush

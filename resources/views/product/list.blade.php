@@ -19,12 +19,12 @@
                     </div>
 
                     <!-- Search Form -->
-                    <form method="GET" action="" class="mb-3">
+                    {{-- <form method="GET" action="" class="mb-3">
                         <div class="input-group">
                             <input type="text" name="search" class="form-control" placeholder="Search by name or email" value="">
                             <button type="submit" class="btn btn-primary btn-sm">Search</button>
                         </div>
-                    </form>
+                    </form> --}}
 
                     <!-- Table with stripped rows -->
                     <div class="table-responsive">
@@ -125,23 +125,42 @@
         window.location.href = `/api/product/${id}`;
     }
 
-    function deleteProduct(id) {
-        if (confirm('Are you sure you want to delete this product?')) {
-            axios.delete(`/api/product/${id}`)
-                .then(function(response) {
-                    const redirectUrl = response.data.redirect;
-                    const message = encodeURIComponent(response.data.message); // Encode the message
-
-                    // Redirect to product-fetch page with the success message as a query parameter
-                    window.location.href = `${redirectUrl}?message=${message}`;
-                    // Fetch products again to update the table
-                    // fetchProducts();
-                })
-                .catch(function(error) {
-                    console.error('Error deleting product:', error.message);
-                    alert('Failed to delete product.');
-                });
-        }
+    function deleteProduct(productId) {
+        Swal.fire({
+            title: 'Are you sure?'
+            , text: "You won't be able to revert this!"
+            , icon: 'warning'
+            , showCancelButton: true
+            , confirmButtonColor: '#3085d6'
+            , cancelButtonColor: '#d33'
+            , confirmButtonText: 'Yes, delete it!'
+            , cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Make DELETE request to the API endpoint
+                axios.delete(`/api/product/${productId}`)
+                    .then(function(response) {
+                        Swal.fire({
+                            title: 'Deleted!'
+                            , text: 'The product has been deleted.'
+                            , icon: 'success'
+                            , timer: 2000
+                            , showConfirmButton: false
+                        }).then(() => {
+                            fetchProducts();
+                            // location.reload(); 
+                        });
+                    })
+                    .catch(function(error) {
+                        Swal.fire(
+                            'Failed!'
+                            , 'There was a problem deleting the product.'
+                            , 'error'
+                        );
+                        console.error('Error deleting product:', error.message);
+                    });
+            }
+        });
     }
 
     // Initial fetch for page 1
