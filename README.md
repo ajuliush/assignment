@@ -1,6 +1,6 @@
 ## Installation
 
--   `[https://github.com/itminanbiva078/hrms_software.git](https://github.com/ajuliush/assignment.git)`
+-   `https://github.com/itminanbiva078/hrms_software.git`
 -   `cd assignment/`
 -   `composer install`
 -   `cp .env.example .env`
