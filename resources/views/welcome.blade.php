@@ -976,6 +976,13 @@
                                                             <th>Request Body</th>
                                                         </tr>
                                                         <tr>
+                                                            <td>GET</td>
+                                                            <td>api/product</td>
+                                                            <td>Content-Type: application/json
+                                                                <br> Accept: application/json </td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
                                                             <td>POST</td>
                                                             <td>/api/store/product</td>
                                                             <td>Content-Type: application/json
